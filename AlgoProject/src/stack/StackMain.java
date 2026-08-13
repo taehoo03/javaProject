@@ -19,18 +19,38 @@ public class StackMain {
 		stk.push('a');
 		stk.push('b');
 		stk.push('c');
-		
+		stk.push('d');
 		stk.showStack();
+		
+		System.out.println("\nclear 수행");
+		stk.clear();
+		stk.showStack();
+		
+		System.out.println("\npop 수행");
+		stk.pop();
+		
+		System.out.println("\npop 수행");
+		stk.peek();
+		
+		System.out.println("\npop 수행");
+		stk.size();
+		
+		System.out.println("\npop 수행");
+		stk.getCapacity();
+		
+		
+		System.out.println("\nh push 수행");
+		stk.push('h');
+		stk.showStack();
+		
+		System.out.println("\n현재 스택 data 수:" + stk.size());
+		System.out.println("\n스택 용량 :" + stk.getCapacity());
+		System.out.println("\n스택에서 pop한 data :" + stk.pop());
+		
 		
 		System.out.println("\n최상위 값 : " + stk.peek());
 
-		public void size() {
-			//stack의 data 수 return
-		}
-		
-		public void getCapacity() {
-			//전체 stack 용량 return
-		}
+
 	}
 
 }
