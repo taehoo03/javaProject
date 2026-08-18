@@ -50,7 +50,8 @@ public class LinkedList {
 			head=preNode.link; //헤드는 두번쨰 노드 참조
 			preNode.link = null;
 		}else {//두번쨰(템프노드) 부터 데이터가 찾아질때 까지 노드 이동
-			if(data.equals(tempNode.getData())) {
+			while(tempNode != null) {
+				if(data.equals(tempNode.getData())) {
 				//데이터가 일치하는 node를 찾은 경우
 				if(tempNode.link==null) {//마지막 노드에서 데이터가 일치한 경우
 					preNode.link = null; // preNode는 tempNode 이전 node
@@ -58,7 +59,9 @@ public class LinkedList {
 					//preNode : 삭제 노드 이전 노드 , tempNode : 삭제할 노드
 					preNode.link = tempNode.link;
 					tempNode.link = null;
+				
 				}
+				break;
 			}else {
 					preNode = tempNode;
 					tempNode = tempNode.link;
@@ -66,8 +69,77 @@ public class LinkedList {
 			}
 			
 		}
+		}
+//ㅁ지맞 노드 삭제(data 상관 없이 무조건 마지막 노드 삭제)
+public void deledeNode() {
+	ListNode preNode;
+	ListNode tempNode;
+	//노드 없음
+	if(head ==null) {
+		return;
+		
 	}
+	//노드가 1개인 경우
+	if(head.link ==null) {
+		head =null;
+	}else { // 두개 이상인 경우 마지막 노드 찾아야 함(마지막 노드는 null)
+		preNode = head;
+		tempNode = head.link;
+		
+		while(tempNode.link != null) {
+			preNode = tempNode;
+			tempNode = tempNode.link;
+		}
+		//반복이 종료되면 마지막 노드는 tempNode가 참조하고 마지막 이전 노드는 preNode 가 참조함
+		//preNode.link 를 null로 설정해서 tempNode
+		preNode.link = null;
+	}
+}
+
+//노드 검색 : 데이터를 전달해 해당 데이터가 링크드리스트에 있는지 확인 후 있으면 해당 노드의 참조 반환
+public ListNode searchNode(String data) {
+		ListNode tempNode= this.head;
+		
+		while(tempNode != null) { //다음 노드가 있는 동안 반복
+			if(data.equals(tempNode.getData())) {
+				//data 가 탑색되면 탐색된 node의 참조 주소가 반환됨
+				return tempNode;
+			}else {
+				tempNode = tempNode.link;
+			}
+		}
+		return tempNode; //안 찾아지면 최동tempNode 반환(반환값은 null)
+		
+}
+// 연결 리스트의 모든 노드의 data 출력
+public void printList() {
+	ListNode tempNode = this.head;
 	
+	//head 부터 시작하여 마지막 노드ㅓ까지 순회하면서 출력
+	
+	while(tempNode !=null) {
+		System.out.print(tempNode.getData()+ " ");
+		tempNode = tempNode.link;
+	}
+	System.out.println(); 
+		
+}
+//연결 리스트를 역순을 ㅗ재배치 
+public void reverseList() {
+	ListNode nextNode = head;
+	ListNode currentNode = null;
+	ListNode preNode = null;
+	
+	while(nextNode != null) {
+		preNode = currentNode;
+		currentNode = nextNode;
+		nextNode = nextNode.link;
+		currentNode.link = preNode;
+	}
+	head = currentNode;
+}
+	
+}
 	
 	
 	
