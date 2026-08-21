@@ -1,4 +1,4 @@
-package exam;
+package stack;
 
 public class Stack {
     private int stackSize;
