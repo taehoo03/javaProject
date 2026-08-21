@@ -2,6 +2,8 @@ package stack;
 
 import java.util.Scanner;
 
+import exam.Stack;
+
 public class StackMainMenu {
 
 	public static void main(String[] args) {

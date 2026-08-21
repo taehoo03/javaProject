@@ -1,12 +1,11 @@
 package exam;
 
 import java.util.Scanner;
-import stack.Stack;
 
-public class StackEx1 {
+public class StackEx {
 
     public static void main(String[] args) {
-
+    	
         Scanner sc = new Scanner(System.in);
 
         System.out.print("수식 입력 : ");

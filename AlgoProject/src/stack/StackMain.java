@@ -1,5 +1,7 @@
 package stack;
 
+import exam.Stack;
+
 public class StackMain {
 
 	public static void main(String[] args) {
