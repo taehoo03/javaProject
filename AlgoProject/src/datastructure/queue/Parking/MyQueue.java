@@ -31,12 +31,15 @@ public class MyQueue {
 		return(rear ==queueSize-1);
 	}
 	//큐에 데이터 삽입
-	public void  enqueue(char item) {
+	//반환 값 수정 :ㅣ 개발코드(main)에서 enqueue 결과에 따라 다른 처리 해야함
+	public boolean  enqueue(char item) {
 		if(isFull()) {//마지막에 지정된 데이터가 큐의 마지막 원소로 저장되면 Full
 			System.out.println("Queue Full");
+			return false;
 		}else {
 			queue[++rear] = item;
 			num++;
+			return true;
 		}
 	}
 	
@@ -86,6 +89,8 @@ public class MyQueue {
 			System.out.println();
 		}
 	}
+	//전달된 data 가 queue에 저장된 데이터인지 확인 후 해당 인덱스 반황
+	//현재 주차 확인중인 차량에 대하여 출차시 선행차량 대수 확인용으로 변경
 	
 	public int contains(char value) {
 		if(isEmpty()) {
@@ -95,7 +100,7 @@ public class MyQueue {
 			
 			for(int i = front+1; i<rear; i++) {
 				if(queue[i] ==value) {
-					return i;
+					return i - (front +1); //  i : 현재 확인 중인 원수의 index - 첫번째 dequeue 대상 원소dml index
 				}
 			}
 			}
