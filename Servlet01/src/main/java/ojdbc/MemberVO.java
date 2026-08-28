@@ -1,0 +1,9 @@
+package ojdbc;
+
+public class MemberVO {
+	 private String id;
+	 private String pwd;
+	 private String name;
+	 private String email;
+	 private String joinDate;
+}

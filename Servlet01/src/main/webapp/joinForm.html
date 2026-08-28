@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>회원 가입</title>
+</head>
+<body>
+
+<h2>회원 가입</h2>
+
+<form method="post" action="insertMember">
+
+    성명 :<input type="text" name="name"><br><br>
+
+    ID : <input type="text" name="id"><br><br>
+
+    비밀번호 :<input type="password" name="pwd"><br><br>
+
+    주민등록번호 :<input type="text" name="jumin1"> - <input type="text" name="jumin2"><br><br>
+
+    학년 :
+    <input type="radio" name="grade" value="1">1학년
+    <input type="radio" name="grade" value="2">2학년
+    <input type="radio" name="grade" value="3">3학년
+    <input type="radio" name="grade" value="4">4학년
+    <br><br>
+
+    관심분야 :
+    <input type="checkbox" name="interest" value="컴퓨터">컴퓨터
+    <input type="checkbox" name="interest" value="게임">게임
+    <input type="checkbox" name="interest" value="프로그래밍">프로그래밍
+    <input type="checkbox" name="interest" value="AI">AI
+    <br><br>
+
+    학과 :
+    <select name="department">
+        <option value="컴퓨터공학과">컴퓨터공학과</option>
+        <option value="소프트웨어학과">소프트웨어학과</option>
+        <option value="전자공학과">전자공학과</option>
+    </select>
+
+    <br><br>
+
+    <input type="submit" value="가입">
+    <input type="reset" value="취소">
+
+</form>
+
+</body>
+</html>
