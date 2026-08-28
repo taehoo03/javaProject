@@ -8,7 +8,9 @@ public class MemberDAO {
 		
 		try {
 			class.forName("oracle.driver.OracleDriver");
+		}catch(Exception E) {
+			
 		}
-.	0}
+	}
 }
 
