@@ -4,9 +4,11 @@
 	<html>
 	<head>
 		<meta charset="UTF-8">
-		<title></title>
+		<title>include액션태그 2</title>
 	</head>
 	<body>
+	<h3>includeAction2.jsp입니다</h3>
 
-	</body>
+	</body> 
+	
 </html>

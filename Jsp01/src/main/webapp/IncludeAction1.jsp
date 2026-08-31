@@ -4,9 +4,11 @@
 	<html>
 	<head>
 		<meta charset="UTF-8">
-		<title></title>
+		<title>include액션태그 1</title>
 	</head>
 	<body>
-
+	<h3>includeAction1.jsp입니다</h3>
+	<hr>
+	<jsp:include page = "includeAction2.jsp" flush = "true"/>
 	</body>
 </html>
