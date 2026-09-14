@@ -5,43 +5,121 @@
     <display-name>Servlet01</display-name>
 
     <welcome-file-list>
+
         <welcome-file>index.html</welcome-file>
         <welcome-file>index.jsp</welcome-file>
         <welcome-file>index.htm</welcome-file>
         <welcome-file>default.html</welcome-file>
         <welcome-file>default.jsp</welcome-file>
         <welcome-file>default.htm</welcome-file>
+
     </welcome-file-list>
 
+
+    <servlet>
+
+        <servlet-name>my</servlet-name>
+
+        <servlet-class>servlet01.FirstServlet</servlet-class>
+
+    </servlet>
+
+    <servlet-mapping>
+
+        <servlet-name>my</servlet-name>
+
+        <url-pattern>/first</url-pattern>
+
+    </servlet-mapping>
+
+
+    <servlet>
+
+        <servlet-name>second</servlet-name>
+
+        <servlet-class>servlet01.SecondServlet</servlet-class>
+
+    </servlet>
+
+    <servlet-mapping>
+
+        <servlet-name>second</servlet-name>
+
+        <url-pattern>/second</url-pattern>
+
+    </servlet-mapping>
+
+
+
+
+    <servlet>
+
+        <servlet-name>productBinding</servlet-name>
+
+        <servlet-class>exam.binding.ProductBindingServlet</servlet-class>
+
+    </servlet>
+
+    <servlet-mapping>
+
+        <servlet-name>productBinding</servlet-name>
+
+        <url-pattern>/productBinding</url-pattern>
+
+    </servlet-mapping>
+
+
+    
+
+    <servlet>
+
+        <servlet-name>productView</servlet-name>
+
+        <servlet-class>exam.binding.ProductViewServlet</servlet-class>
+
+    </servlet>
+
+    <servlet-mapping>
+
+        <servlet-name>productView</servlet-name>
+
+        <url-pattern>/productView</url-pattern>
+
+    </servlet-mapping>
+    
     
     <servlet>
-    <servlet-name>my</servlet-name>
-    <servlet-class>servlet01.FirstServlet</servlet-class>
+
+    <servlet-name>product</servlet-name>
+
+    <servlet-class>sec08.ProductServlet</servlet-class>
+
 </servlet>
 
 <servlet-mapping>
-    <servlet-name>my</servlet-name>
-    <url-pattern>/first</url-pattern>
+
+    <servlet-name>product</servlet-name>
+
+    <url-pattern>/product</url-pattern>
+
 </servlet-mapping>
 
 
 <servlet>
-    <servlet-name>second</servlet-name>
-    <servlet-class>servlet01.SecondServlet</servlet-class>
+
+    <servlet-name>productView</servlet-name>
+
+    <servlet-class>sec08.ProductViewServlet</servlet-class>
+
 </servlet>
 
 <servlet-mapping>
-    <servlet-name>second</servlet-name>
-    <url-pattern>/second</url-pattern>
+
+    <servlet-name>productView</servlet-name>
+
+    <url-pattern>/productView</url-pattern>
+
 </servlet-mapping>
 
+
 </web-app>
-
-
-
-
-
-
-
-
-
