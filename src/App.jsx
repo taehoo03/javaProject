@@ -1,17 +1,20 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import axios from 'axios'
 import './App.css'
 import Friends from './pages/Friends'
 import GiftRecommend from './pages/GiftRecommend'
 import ProductDetail from './pages/ProductDetail'
-import Signup from './pages/Signup'
+import Signup from './pages/Signup.jsx'
 import Login from './pages/Login'
 import ProductManage from './pages/ProductManage'
 import Cart from './pages/Cart'
 import Order from './pages/Order'
+import GiftBox from './pages/GiftBox'
 import Admin from './pages/Admin'
 import MemberManage from './pages/MemberManage'
 import OrderManage from './pages/OrderManage'
 import MyPreference from './pages/MyPreference'
+import SpringTest from './pages/SpringTest'
 
 function App() {
   const [page, setPage] = useState('home')
@@ -19,6 +22,8 @@ function App() {
   const [loginUser, setLoginUser] = useState(
     JSON.parse(localStorage.getItem('loginUser'))
   )
+
+  const [friends, setFriends] = useState([])
 
   const handleLogin = (user) => {
     setLoginUser(user)
@@ -28,8 +33,78 @@ function App() {
   const handleLogout = () => {
     localStorage.removeItem('loginUser')
     setLoginUser(null)
+    setFriends([])
     setPage('home')
   }
+
+  useEffect(() => {
+    if (loginUser) {
+      loadFriends()
+    } else {
+      setFriends([])
+    }
+  }, [loginUser])
+
+  const loadFriends = async () => {
+    try {
+      const friendResponse = await axios.get(
+        'http://localhost:8080/api/friends',
+        {
+          params: {
+            memberId: loginUser.memberId
+          }
+        }
+      )
+
+      const memberResponse = await axios.get(
+        'http://localhost:8080/api/members'
+      )
+
+      const members = memberResponse.data
+
+      const friendList = await Promise.all(
+        friendResponse.data.map(async (friend) => {
+          const member = members.find(
+            (member) =>
+              member.memberId === friend.friendMemberId
+          )
+
+          let preference = null
+
+          try {
+            const preferenceResponse =
+              await axios.get(
+                'http://localhost:8080/api/preferences',
+                {
+                  params: {
+                    memberId: friend.friendMemberId
+                  }
+                }
+              )
+
+            preference = preferenceResponse.data
+          } catch (error) {
+            preference = null
+          }
+
+          return {
+            ...friend,
+            name: member ? member.name : '친구',
+            birth: member ? member.birth : '',
+            preference
+          }
+        })
+      )
+
+      setFriends(friendList)
+    } catch (error) {
+      setFriends([])
+    }
+  }
+
+  const isAdmin =
+    loginUser &&
+    loginUser.role === 'ADMIN'
 
   return (
     <div className="app">
@@ -40,8 +115,6 @@ function App() {
           <h1>뭐든</h1>
 
           <div className="header-menu">
-
-            <span>선물 가이드</span>
 
             {loginUser ? (
               <>
@@ -108,7 +181,14 @@ function App() {
               장바구니
             </div>
 
-            <div className="menu">
+            <div
+              className={
+                page === 'giftBox'
+                  ? 'menu active'
+                  : 'menu'
+              }
+              onClick={() => setPage('giftBox')}
+            >
               선물함
             </div>
 
@@ -123,26 +203,45 @@ function App() {
               내 취향
             </div>
 
-            <div
-              className={
-                page === 'productManage'
-                  ? 'menu active'
-                  : 'menu'
-              }
-              onClick={() => setPage('productManage')}
-            >
-              상품관리
-            </div>
+            {isAdmin && (
+              <>
+                <div
+                  className={
+                    page === 'productManage'
+                      ? 'menu active'
+                      : 'menu'
+                  }
+                  onClick={() =>
+                    setPage('productManage')
+                  }
+                >
+                  상품관리
+                </div>
+
+                <div
+                  className={
+                    page === 'admin'
+                      ? 'menu active'
+                      : 'menu'
+                  }
+                  onClick={() =>
+                    setPage('admin')
+                  }
+                >
+                  관리자모드
+                </div>
+              </>
+            )}
 
             <div
               className={
-                page === 'admin'
+                page === 'springTest'
                   ? 'menu active'
                   : 'menu'
               }
-              onClick={() => setPage('admin')}
+              onClick={() => setPage('springTest')}
             >
-              관리자모드
+              서버 연결 테스트
             </div>
 
           </aside>
@@ -195,37 +294,70 @@ function App() {
 
                   <h2>다가오는 생일</h2>
 
-                  <div className="friend-list">
+                  {friends.length === 0 ? (
+                    <div className="friend-list">
 
-                    <div className="friend">
+                      <div className="friend">
 
-                      <div className="friend-info">
-                        <strong>김하늘</strong>
-                        <span>대학 친구</span>
-                        <span>10월 10일</span>
+                        <div className="friend-info">
+
+                          <strong>
+                            등록된 친구가 없습니다.
+                          </strong>
+
+                          <span>
+                            친구를 등록하면 여기에 표시됩니다.
+                          </span>
+
+                        </div>
+
                       </div>
 
-                      <span className="ready">
-                        취향 준비됨
-                      </span>
+                    </div>
+                  ) : (
+                    <div className="friend-list">
+
+                      {friends.map((friend) => (
+
+                        <div
+                          className="friend"
+                          key={friend.friendId}
+                        >
+
+                          <div className="friend-info">
+
+                            <strong>
+                              {friend.name}
+                            </strong>
+
+                            <span>
+                              친구
+                            </span>
+
+                            {friend.birth && (
+                              <span>
+                                {friend.birth}
+                              </span>
+                            )}
+
+                          </div>
+
+                          {friend.preference ? (
+                            <span className="ready">
+                              취향 준비됨
+                            </span>
+                          ) : (
+                            <span className="ready">
+                              취향 미등록
+                            </span>
+                          )}
+
+                        </div>
+
+                      ))}
 
                     </div>
-
-                    <div className="friend">
-
-                      <div className="friend-info">
-                        <strong>박지민</strong>
-                        <span>친구</span>
-                        <span>10월 25일</span>
-                      </div>
-
-                      <span className="ready">
-                        취향 준비됨
-                      </span>
-
-                    </div>
-
-                  </div>
+                  )}
 
                 </section>
 
@@ -236,27 +368,39 @@ function App() {
                   <div className="process-list">
 
                     <div className="process-item">
+
                       <strong>01</strong>
+
                       <h3>친구 선택</h3>
+
                       <p>
                         선물을 줄 친구를 선택합니다.
                       </p>
+
                     </div>
 
                     <div className="process-item">
+
                       <strong>02</strong>
+
                       <h3>취향 확인</h3>
+
                       <p>
                         친구가 등록한 취향을 확인합니다.
                       </p>
+
                     </div>
 
                     <div className="process-item">
+
                       <strong>03</strong>
+
                       <h3>선물 선택</h3>
+
                       <p>
                         추천된 상품 중 마음에 드는 선물을 선택합니다.
                       </p>
+
                     </div>
 
                   </div>
@@ -285,24 +429,32 @@ function App() {
               <Order setPage={setPage} />
             )}
 
-            {page === 'productManage' && (
+            {page === 'giftBox' && (
+              <GiftBox setPage={setPage} />
+            )}
+
+            {page === 'productManage' && isAdmin && (
               <ProductManage />
             )}
 
-            {page === 'admin' && (
+            {page === 'admin' && isAdmin && (
               <Admin setPage={setPage} />
             )}
 
-            {page === 'memberManage' && (
+            {page === 'memberManage' && isAdmin && (
               <MemberManage />
             )}
 
-            {page === 'orderManage' && (
+            {page === 'orderManage' && isAdmin && (
               <OrderManage />
             )}
 
             {page === 'preference' && (
-              <MyPreference />
+              <MyPreference setPage={setPage} />
+            )}
+
+            {page === 'springTest' && (
+              <SpringTest />
             )}
 
           </main>

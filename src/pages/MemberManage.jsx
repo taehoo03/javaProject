@@ -1,34 +1,26 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import axios from 'axios'
 
 function MemberManage() {
-  const savedUser = JSON.parse(localStorage.getItem('user'))
+  const [members, setMembers] = useState([])
 
-  const [members, setMembers] = useState(
-    savedUser
-      ? [savedUser]
-      : [
-          {
-            name: '김하늘',
-            userId: 'haneul123',
-            password: '1234',
-            phone: '010-1234-5678',
-            birth: '2002-10-10',
-            address: '대전광역시',
-            detailAddress: '중구'
-          },
-          {
-            name: '박지민',
-            userId: 'jimin123',
-            password: '1234',
-            phone: '010-5678-1234',
-            birth: '2001-10-25',
-            address: '대전광역시',
-            detailAddress: '서구'
-          }
-        ]
-  )
+  useEffect(() => {
+    loadMembers()
+  }, [])
 
-  const handleDelete = (userId) => {
+  const loadMembers = async () => {
+    try {
+      const response = await axios.get(
+        'http://localhost:8080/api/members'
+      )
+
+      setMembers(response.data)
+    } catch (error) {
+      alert('회원 데이터를 불러오지 못했습니다.')
+    }
+  }
+
+  const handleDelete = async (userId) => {
     const result = window.confirm(
       '이 회원을 삭제하시겠습니까?'
     )
@@ -37,14 +29,21 @@ function MemberManage() {
       return
     }
 
-    setMembers(
-      members.filter(
-        (member) => member.userId !== userId
+    try {
+      await axios.delete(
+        'http://localhost:8080/api/members',
+        {
+          params: {
+            userId
+          }
+        }
       )
-    )
 
-    if (savedUser && savedUser.userId === userId) {
-      localStorage.removeItem('user')
+      alert('회원이 삭제되었습니다.')
+
+      await loadMembers()
+    } catch (error) {
+      alert('회원 삭제에 실패했습니다.')
     }
   }
 
@@ -77,7 +76,7 @@ function MemberManage() {
         {members.map((member) => (
           <div
             className="member-table-row"
-            key={member.userId}
+            key={member.memberId}
           >
             <span>{member.name}</span>
 

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import axios from 'axios'
 
 function Signup({ setPage }) {
   const [name, setName] = useState('')
@@ -9,7 +10,7 @@ function Signup({ setPage }) {
   const [address, setAddress] = useState('')
   const [detailAddress, setDetailAddress] = useState('')
 
-  const handleSignup = () => {
+  const handleSignup = async () => {
     if (
       !name ||
       !userId ||
@@ -32,22 +33,34 @@ function Signup({ setPage }) {
       detailAddress
     }
 
-    localStorage.setItem('user', JSON.stringify(user))
+    try {
+      await axios.post(
+        'http://localhost:8080/api/members',
+        user
+      )
 
-    alert('회원가입이 완료되었습니다.')
-    setPage('login')
+      localStorage.setItem(
+        'user',
+        JSON.stringify(user)
+      )
+
+      alert('회원가입이 완료되었습니다.')
+      setPage('login')
+    } catch (error) {
+      alert('회원가입에 실패했습니다.')
+    }
   }
 
   return (
     <div className="signup-page">
-
       <div className="signup-box">
-
         <h2>회원가입</h2>
-        <p>뭐든을 이용하기 위해 회원정보를 입력해주세요.</p>
+
+        <p>
+          뭐든을 이용하기 위해 회원정보를 입력해주세요.
+        </p>
 
         <div className="signup-form">
-
           <label>이름</label>
 
           <input
@@ -106,7 +119,9 @@ function Signup({ setPage }) {
           <input
             type="text"
             value={detailAddress}
-            onChange={(e) => setDetailAddress(e.target.value)}
+            onChange={(e) =>
+              setDetailAddress(e.target.value)
+            }
             placeholder="상세주소를 입력해주세요."
           />
 
@@ -120,11 +135,8 @@ function Signup({ setPage }) {
           >
             돌아가기
           </button>
-
         </div>
-
       </div>
-
     </div>
   )
 }

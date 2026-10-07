@@ -1,29 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import axios from 'axios'
 
 function ProductManage() {
-  const [products, setProducts] = useState([
-    {
-      id: 1,
-      name: '데일리 향수 세트',
-      category: '향수',
-      price: 39000,
-      stock: 20
-    },
-    {
-      id: 2,
-      name: '감성 데스크 소품 세트',
-      category: '소품',
-      price: 28000,
-      stock: 15
-    },
-    {
-      id: 3,
-      name: '베스트셀러 도서 세트',
-      category: '책',
-      price: 25000,
-      stock: 30
-    }
-  ])
+  const [products, setProducts] = useState([])
 
   const [name, setName] = useState('')
   const [category, setCategory] = useState('')
@@ -31,41 +10,82 @@ function ProductManage() {
   const [stock, setStock] = useState('')
   const [editId, setEditId] = useState(null)
 
-  const handleSubmit = () => {
-    if (!name || !category || !price || !stock) {
+  useEffect(() => {
+    loadProducts()
+  }, [])
+
+  const loadProducts = async () => {
+    try {
+      const response = await axios.get(
+        'http://localhost:8080/api/products'
+      )
+
+      const productData = response.data.map((product) => ({
+        id: product.productId,
+        name: product.productName,
+        category: product.category,
+        price: product.price,
+        stock: product.stock
+      }))
+
+      setProducts(productData)
+    } catch (error) {
+      alert('상품 데이터를 불러오지 못했습니다.')
+    }
+  }
+
+  const handleSubmit = async () => {
+    if (!name || !category || !price || stock === '') {
       alert('상품 정보를 모두 입력해주세요.')
       return
     }
 
+    if (Number(price) < 0 || Number(stock) < 0) {
+      alert('가격과 재고는 0 이상으로 입력해주세요.')
+      return
+    }
+
     if (editId) {
-      setProducts(
-        products.map((product) =>
-          product.id === editId
-            ? {
-                ...product,
-                name,
-                category,
-                price: Number(price),
-                stock: Number(stock)
-              }
-            : product
+      try {
+        await axios.put(
+          'http://localhost:8080/api/products',
+          {
+            productId: editId,
+            productName: name,
+            category,
+            price: Number(price),
+            stock: Number(stock)
+          }
         )
-      )
 
-      alert('상품이 수정되었습니다.')
-      setEditId(null)
-    } else {
-      const newProduct = {
-        id: Date.now(),
-        name,
-        category,
-        price: Number(price),
-        stock: Number(stock)
+        alert('상품이 수정되었습니다.')
+
+        await loadProducts()
+
+        setEditId(null)
+      } catch (error) {
+        alert('상품 수정에 실패했습니다.')
+        return
       }
+    } else {
+      try {
+        await axios.post(
+          'http://localhost:8080/api/products',
+          {
+            productName: name,
+            category,
+            price: Number(price),
+            stock: Number(stock)
+          }
+        )
 
-      setProducts([...products, newProduct])
+        alert('상품이 등록되었습니다.')
 
-      alert('상품이 등록되었습니다.')
+        await loadProducts()
+      } catch (error) {
+        alert('상품 등록에 실패했습니다.')
+        return
+      }
     }
 
     setName('')
@@ -82,16 +102,31 @@ function ProductManage() {
     setStock(product.stock)
   }
 
-  const handleDelete = (id) => {
-    const result = window.confirm('이 상품을 삭제하시겠습니까?')
+  const handleDelete = async (id) => {
+    const result = window.confirm(
+      '이 상품을 삭제하시겠습니까?'
+    )
 
     if (!result) {
       return
     }
 
-    setProducts(
-      products.filter((product) => product.id !== id)
-    )
+    try {
+      await axios.delete(
+        'http://localhost:8080/api/products',
+        {
+          params: {
+            productId: id
+          }
+        }
+      )
+
+      alert('상품이 삭제되었습니다.')
+
+      await loadProducts()
+    } catch (error) {
+      alert('상품 삭제에 실패했습니다.')
+    }
   }
 
   return (
@@ -138,6 +173,7 @@ function ProductManage() {
             value={stock}
             onChange={(e) => setStock(e.target.value)}
             placeholder="재고"
+            min="0"
           />
 
           <button onClick={handleSubmit}>
@@ -170,12 +206,20 @@ function ProductManage() {
               className="table-row"
               key={product.id}
             >
+
               <span>{product.name}</span>
+
               <span>{product.category}</span>
+
               <span>
                 {product.price.toLocaleString()}원
               </span>
-              <span>{product.stock}개</span>
+
+              <span>
+                {product.stock === 0
+                  ? '품절'
+                  : `${product.stock}개`}
+              </span>
 
               <div className="table-buttons">
 
@@ -186,12 +230,15 @@ function ProductManage() {
                 </button>
 
                 <button
-                  onClick={() => handleDelete(product.id)}
+                  onClick={() =>
+                    handleDelete(product.id)
+                  }
                 >
                   삭제
                 </button>
 
               </div>
+
             </div>
           ))}
 
