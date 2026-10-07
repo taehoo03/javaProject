@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mwodeun.FriendMapper">
+
+    <resultMap id="friendResultMap" type="com.mwodeun.FriendVO">
+        <id property="friendId" column="FRIEND_ID"/>
+        <result property="memberId" column="MEMBER_ID"/>
+        <result property="friendMemberId" column="FRIEND_MEMBER_ID"/>
+    </resultMap>
+
+    <select id="getFriends"
+            parameterType="int"
+            resultMap="friendResultMap">
+        SELECT
+            FRIEND_ID,
+            MEMBER_ID,
+            FRIEND_MEMBER_ID
+        FROM FRIEND
+        WHERE MEMBER_ID = #{memberId}
+        ORDER BY FRIEND_ID
+    </select>
+
+    <insert id="insertFriend"
+            parameterType="com.mwodeun.FriendVO">
+        INSERT INTO FRIEND (
+            MEMBER_ID,
+            FRIEND_MEMBER_ID
+        )
+        VALUES (
+            #{memberId},
+            #{friendMemberId}
+        )
+    </insert>
+
+    <delete id="deleteFriend"
+            parameterType="int">
+        DELETE FROM FRIEND
+        WHERE FRIEND_ID = #{friendId}
+    </delete>
+
+</mapper>

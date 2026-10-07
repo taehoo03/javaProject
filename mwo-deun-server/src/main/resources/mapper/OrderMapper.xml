@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mwodeun.OrderMapper">
+
+    <resultMap id="orderResultMap" type="com.mwodeun.OrderVO">
+        <id property="orderId" column="ORDER_ID"/>
+        <result property="memberId" column="MEMBER_ID"/>
+        <result property="receiverId" column="RECEIVER_ID"/>
+        <result property="productId" column="PRODUCT_ID"/>
+        <result property="quantity" column="QUANTITY"/>
+        <result property="totalPrice" column="TOTAL_PRICE"/>
+        <result property="address" column="ADDRESS"/>
+        <result property="detailAddress" column="DETAIL_ADDRESS"/>
+        <result property="paymentMethod" column="PAYMENT_METHOD"/>
+        <result property="orderStatus" column="ORDER_STATUS"/>
+        <result property="orderDate" column="ORDER_DATE"/>
+        <result property="productName" column="PRODUCT_NAME"/>
+        <result property="category" column="CATEGORY"/>
+    </resultMap>
+
+    <select id="getOrders"
+            parameterType="int"
+            resultMap="orderResultMap">
+        SELECT
+            O.ORDER_ID,
+            O.MEMBER_ID,
+            O.RECEIVER_ID,
+            O.PRODUCT_ID,
+            O.QUANTITY,
+            O.TOTAL_PRICE,
+            O.ADDRESS,
+            O.DETAIL_ADDRESS,
+            O.PAYMENT_METHOD,
+            O.ORDER_STATUS,
+            TO_CHAR(O.ORDER_DATE, 'YYYY-MM-DD HH24:MI:SS') AS ORDER_DATE,
+            P.PRODUCT_NAME,
+            P.CATEGORY
+        FROM ORDERS O
+        JOIN PRODUCT P
+          ON O.PRODUCT_ID = P.PRODUCT_ID
+        WHERE O.MEMBER_ID = #{memberId}
+        ORDER BY O.ORDER_ID DESC
+    </select>
+
+    <select id="getReceivedOrders"
+            parameterType="int"
+            resultMap="orderResultMap">
+        SELECT
+            O.ORDER_ID,
+            O.MEMBER_ID,
+            O.RECEIVER_ID,
+            O.PRODUCT_ID,
+            O.QUANTITY,
+            O.TOTAL_PRICE,
+            O.ADDRESS,
+            O.DETAIL_ADDRESS,
+            O.PAYMENT_METHOD,
+            O.ORDER_STATUS,
+            TO_CHAR(O.ORDER_DATE, 'YYYY-MM-DD HH24:MI:SS') AS ORDER_DATE,
+            P.PRODUCT_NAME,
+            P.CATEGORY
+        FROM ORDERS O
+        JOIN PRODUCT P
+          ON O.PRODUCT_ID = P.PRODUCT_ID
+        WHERE O.RECEIVER_ID = #{receiverId}
+        ORDER BY O.ORDER_ID DESC
+    </select>
+
+    <select id="getOrder"
+            parameterType="int"
+            resultMap="orderResultMap">
+        SELECT
+            O.ORDER_ID,
+            O.MEMBER_ID,
+            O.RECEIVER_ID,
+            O.PRODUCT_ID,
+            O.QUANTITY,
+            O.TOTAL_PRICE,
+            O.ADDRESS,
+            O.DETAIL_ADDRESS,
+            O.PAYMENT_METHOD,
+            O.ORDER_STATUS,
+            TO_CHAR(O.ORDER_DATE, 'YYYY-MM-DD HH24:MI:SS') AS ORDER_DATE,
+            P.PRODUCT_NAME,
+            P.CATEGORY
+        FROM ORDERS O
+        JOIN PRODUCT P
+          ON O.PRODUCT_ID = P.PRODUCT_ID
+        WHERE O.ORDER_ID = #{orderId}
+    </select>
+
+    <select id="getStock"
+            parameterType="int"
+            resultType="int">
+        SELECT STOCK
+        FROM PRODUCT
+        WHERE PRODUCT_ID = #{productId}
+    </select>
+
+    <insert id="insertOrder"
+            parameterType="com.mwodeun.OrderVO">
+        INSERT INTO ORDERS (
+            MEMBER_ID,
+            RECEIVER_ID,
+            PRODUCT_ID,
+            QUANTITY,
+            TOTAL_PRICE,
+            ADDRESS,
+            DETAIL_ADDRESS,
+            PAYMENT_METHOD,
+            ORDER_STATUS
+        )
+        VALUES (
+            #{memberId},
+            #{receiverId},
+            #{productId},
+            #{quantity},
+            #{totalPrice},
+            #{address},
+            #{detailAddress},
+            #{paymentMethod},
+            '주문완료'
+        )
+    </insert>
+
+    <update id="updateOrderStatus"
+            parameterType="com.mwodeun.OrderVO">
+        UPDATE ORDERS
+        SET ORDER_STATUS = #{orderStatus}
+        WHERE ORDER_ID = #{orderId}
+    </update>
+
+    <update id="decreaseStock"
+            parameterType="com.mwodeun.OrderVO">
+        UPDATE PRODUCT
+        SET STOCK = STOCK - #{quantity}
+        WHERE PRODUCT_ID = #{productId}
+        AND STOCK >= #{quantity}
+    </update>
+
+    <delete id="deleteOrder"
+            parameterType="int">
+        DELETE FROM ORDERS
+        WHERE ORDER_ID = #{orderId}
+    </delete>
+
+</mapper>

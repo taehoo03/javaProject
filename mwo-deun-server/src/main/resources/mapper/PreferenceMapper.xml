@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mwodeun.PreferenceMapper">
+
+    <resultMap id="preferenceResultMap" type="com.mwodeun.PreferenceVO">
+        <id property="preferenceId" column="PREFERENCE_ID"/>
+        <result property="memberId" column="MEMBER_ID"/>
+        <result property="interest" column="INTEREST"/>
+        <result property="favorite" column="FAVORITE"/>
+        <result property="gift" column="GIFT"/>
+    </resultMap>
+
+    <select id="getPreference"
+            parameterType="int"
+            resultMap="preferenceResultMap">
+        SELECT
+            PREFERENCE_ID,
+            MEMBER_ID,
+            INTEREST,
+            FAVORITE,
+            GIFT
+        FROM PREFERENCE
+        WHERE MEMBER_ID = #{memberId}
+    </select>
+
+    <insert id="insertPreference"
+            parameterType="com.mwodeun.PreferenceVO">
+        INSERT INTO PREFERENCE (
+            MEMBER_ID,
+            INTEREST,
+            FAVORITE,
+            GIFT
+        )
+        VALUES (
+            #{memberId},
+            #{interest},
+            #{favorite},
+            #{gift}
+        )
+    </insert>
+
+    <update id="updatePreference"
+            parameterType="com.mwodeun.PreferenceVO">
+        UPDATE PREFERENCE
+        SET
+            INTEREST = #{interest},
+            FAVORITE = #{favorite},
+            GIFT = #{gift}
+        WHERE MEMBER_ID = #{memberId}
+    </update>
+
+</mapper>

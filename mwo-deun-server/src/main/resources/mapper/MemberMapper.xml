@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mwodeun.MemberMapper">
+
+    <resultMap id="memberResultMap" type="com.mwodeun.MemberVO">
+        <id property="memberId" column="MEMBER_ID"/>
+        <result property="userId" column="USER_ID"/>
+        <result property="password" column="PASSWORD"/>
+        <result property="name" column="NAME"/>
+        <result property="phone" column="PHONE"/>
+        <result property="birth" column="BIRTH"/>
+        <result property="address" column="ADDRESS"/>
+        <result property="detailAddress" column="DETAIL_ADDRESS"/>
+        <result property="role" column="ROLE"/>
+    </resultMap>
+
+    <select id="getMembers" resultMap="memberResultMap">
+        SELECT
+            MEMBER_ID,
+            USER_ID,
+            PASSWORD,
+            NAME,
+            PHONE,
+            BIRTH,
+            ADDRESS,
+            DETAIL_ADDRESS,
+            ROLE
+        FROM MEMBER
+        ORDER BY MEMBER_ID
+    </select>
+
+    <insert id="insertMember" parameterType="com.mwodeun.MemberVO">
+        INSERT INTO MEMBER (
+            USER_ID,
+            PASSWORD,
+            NAME,
+            PHONE,
+            BIRTH,
+            ADDRESS,
+            DETAIL_ADDRESS
+        )
+        VALUES (
+            #{userId},
+            #{password},
+            #{name},
+            #{phone},
+            #{birth},
+            #{address},
+            #{detailAddress}
+        )
+    </insert>
+
+    <select id="loginMember"
+            parameterType="com.mwodeun.MemberVO"
+            resultMap="memberResultMap">
+        SELECT
+            MEMBER_ID,
+            USER_ID,
+            PASSWORD,
+            NAME,
+            PHONE,
+            BIRTH,
+            ADDRESS,
+            DETAIL_ADDRESS,
+            ROLE
+        FROM MEMBER
+        WHERE USER_ID = #{userId}
+        AND PASSWORD = #{password}
+    </select>
+
+    <delete id="deleteMember">
+        DELETE FROM MEMBER
+        WHERE USER_ID = #{userId}
+    </delete>
+
+</mapper>
